@@ -15,6 +15,8 @@ public class Job {
     private Timestamp completionTime; //Indicates the time it took for the job to complete, once the last task has been done.
     private float price; //The total price of the job (calculated from the sum of the task prices, [?] - but can be manually dictated if needs be).
     private Vector<Task> taskList; //A list of all the tasks this job consists of.
+    //[?] Does each job require an attribute linking it to a customer, or is the linkage entirely handled through the database?
+    //[?] The same question applies to the payment (ID).
 
     public Job(int jobID, String jobDetails, int priority, String specialInstructions, Timestamp deadline, Timestamp completionTime) {
         this.jobID = jobID; //[?] How are ID's generated again?

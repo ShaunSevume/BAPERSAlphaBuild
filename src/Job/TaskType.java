@@ -32,7 +32,6 @@ public class TaskType {
         this.taskTypeID = taskTypeID;
     }
 
-
     public String getLocation() {
         return location;
     }
