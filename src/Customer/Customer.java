@@ -15,6 +15,7 @@ public class Customer {
     private int discountType; //0 = none, 1 = fixed, 2 = variable, 3 = flexible
     private float discountAmount; //The amount of discount to apply to a customer's job, if they are on a FIXED discount plan.
     private float wallet; //The accumulated amount of ALL the customer's payments, used to determine the discount 'band' for the customer to be in, if they are on a FLEXIBLE discount plan.
+    private Vector<Float> bands; //The discount bands to be specified
 
     public Customer(int customerID, String name, String contactName, String address, String phoneNo) {
         this.customerID = customerID; //[?] How are ID's generated again?
@@ -28,7 +29,10 @@ public class Customer {
         this.discountType = 0;
         this.discountAmount = 0;
         this.wallet = 0;
+        bands = new Vector<Float>();
+        //[?] Add the customer to the database?
     }
+
 
     public int getCustomerID() {
         return customerID;
@@ -114,5 +118,31 @@ public class Customer {
 
     public void setWallet(float wallet) {
         this.wallet = wallet;
+    }
+
+    public boolean checkBands(String[] arr){ //Check to see if the bands are in ascending order
+        float prev = -1;
+        for(int i=0;i< arr.length;i++){
+            if(prev > Float.parseFloat(arr[i])){
+                return false;
+            }
+            prev = Float.parseFloat(arr[i]);
+        }
+        return true;
+    }
+
+    public boolean checkDiscount(String[] arr){ //Check to see if the discount rates are in the range of 0 to 100
+        for(int i=0;i<arr.length;i++){
+            if(Float.parseFloat(arr[i]) < 0 || Float.parseFloat(arr[i]) > 100){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setBands(String[] arr){
+        for(int i=0;i< arr.length;i++){
+            bands.add(Float.parseFloat(arr[i]));
+        }
     }
 }

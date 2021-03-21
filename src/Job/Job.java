@@ -7,7 +7,7 @@ public class Job {
 
     private int jobID; //The unique ID assigned to each job.
     private String jobDetails; //[?]
-    private int priority; //The priority of the job. A higher value will mean a higher priority, and the system will favour its completion over other jobs with a lower priority.
+    private int Urgency; //The urgency of the job which will stipulate the completion time. 0 = Normal (24h), 1 = Urgent (6h), 2 = Super Urgent (3h), 3 = Express (<3h)
     private String specialInstructions; //Any special instructions detailed by the customer for this particular job.
     private int status; //0 = Pending, 1 = Active, 2 = Completed
     private Timestamp deadline; //The deadline by which the job should be completed by.
@@ -16,17 +16,21 @@ public class Job {
     private float price; //The total price of the job (calculated from the sum of the task prices, [?] - but can be manually dictated if needs be).
     private Vector<Task> taskList; //A list of all the tasks this job consists of.
     //[?] Does each job require an attribute linking it to a customer, or is the linkage entirely handled through the database?
+    private int customer; //The ID of the customer this job is linked to
     //[?] The same question applies to the payment (ID).
 
-    public Job(int jobID, String jobDetails, int priority, String specialInstructions, Timestamp deadline, Timestamp completionTime) {
+    public Job(int jobID) {
         this.jobID = jobID; //[?] How are ID's generated again?
-        this.jobDetails = jobDetails;
-        this.priority = priority;
-        this.specialInstructions = specialInstructions;
+        this.jobDetails = " ";
+        this.Urgency = 0;
+        this.specialInstructions = " ";
         this.status = 0;
-        this.deadline = deadline;
+        this.deadline = null;
         this.paid = false;
-        this.completionTime = completionTime; //[?] How's this figured out? From the total time of tasks in the task vector?
+        this.completionTime = null; //[?] How's this figured out? From the total time of tasks in the task vector?
+        this.price = 0f;
+        taskList = new Vector<Task>();
+        //[?] Update on the database as well?
     }
 
     public int getJobID() {
@@ -46,12 +50,12 @@ public class Job {
         this.jobDetails = jobDetails;
     }
 
-    public int getPriority() {
-        return priority;
+    public int getUrgency() {
+        return Urgency;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
+    public void setUrgency(int urgency) {
+        this.Urgency = urgency;
     }
 
     public String getSpecialInstructions() {
@@ -94,6 +98,22 @@ public class Job {
         this.completionTime = completionTime;
     }
 
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public int getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(int customer) {
+        this.customer = customer;
+    }
+
     public void addTask(Task task){
         taskList.add(task);
         //[?] Precaution to make sure all tasks in the vector are unique? Or maybe this can be handled in the controller as the user would only be able to select one of each task anyway...
@@ -101,5 +121,27 @@ public class Job {
 
     public void removeTask(int id){
         //Search the list of tasks for a task with that specific ID and remove it.
+    }
+
+    public  void printTasks(){
+        for(int i = 0; i < taskList.size(); i++) {
+            System.out.println("Task ID: " + taskList.elementAt(i).getTaskTypeID() + ", Description: " + taskList.elementAt(i).getTaskDescription() +  ", Location: " + taskList.elementAt(i).getLocation() + ", Price: " + taskList.elementAt(i).getPrice());
+        }
+    }
+
+    public int calculateDuration(){
+        int duration = 0; //Total time of all tasks in this job
+        for(int i=0;i<taskList.size();i++){
+            duration += taskList.elementAt(i).getDuration();
+        }
+        return duration;
+    }
+
+    public float calculatePrice(){
+        float p = 0;
+        for(int i=0;i<taskList.size();i++){
+            p += taskList.elementAt(i).getPrice();
+        }
+        return p;
     }
 }

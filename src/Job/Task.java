@@ -9,11 +9,11 @@ public class Task extends TaskType{
     private int status; //0 = Pending, 1 = Active, 2 = Completed.
     private Timestamp startTime; //The time at which the task was started.
     private float taskDiscount; //The discount amount to be applied (only used for customers on a 'Variable discount' plan).
-    private int duration; //How long it took to complete the task.
+
     private String completedBy; //The member of staff who completed the task.
 
     public Task(TaskType type, int taskID) {
-        super(type.getTaskDescription(), type.getTaskTypeID(), type.getLocation(), type.getPrice());
+        super(type.getTaskDescription(), type.getTaskTypeID(), type.getLocation(), type.getPrice(), type.getDuration());
         this.type = type;
         this.taskID = taskID; //[?] How are ID's generated again?
         status = 0;
@@ -21,7 +21,6 @@ public class Task extends TaskType{
         //These values are unknown at the time of the creation of a task to be added to a job, so they are either initialised to 0 or null to show this.
         startTime = null;
         taskDiscount = 0;
-        duration = 0;
         completedBy = null;
         //[!] These tasks don't really exist without jobs, so make sure that each instance is placed in any job's list of tasks.
     }
@@ -57,14 +56,6 @@ public class Task extends TaskType{
 
     public void setTaskDiscount(float taskDiscount) {
         this.taskDiscount = taskDiscount;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
     }
 
     public String getCompletedBy() {
