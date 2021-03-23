@@ -5,11 +5,13 @@ import Job.*;
 import Staff.*;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class Controller {
 
     private static int counter;
+    public static DecimalFormat df = new DecimalFormat("0.00");
 
     public Controller(){
         counter = 0;
@@ -136,8 +138,9 @@ public class Controller {
 
         //[6] Setting Urgency and Calculating minimum deadline
         System.out.println("How urgent is the job? 0 = Normal (24h), 1 = Urgent (6h), 2 = Super Urgent (3h), 3 = Express (<3h)");
-        Timestamp deadline = deadline = calculateDeadline(1440); //Default deadline is 24h.
+        Timestamp deadline = calculateDeadline(1440); //Default deadline is 24h.
         int urgency = sc.nextInt();
+        float surcharge = 1; //The additional surcharge if the job is specified as 'Super Urgent' or 'Express'.
         switch(urgency){
             case 0:
                 deadline = calculateDeadline(1440); //A bit dumb to do but it's here for the sake of the program flow.
@@ -147,11 +150,14 @@ public class Controller {
                 break;
             case 2:
                 deadline = calculateDeadline(180);
+                surcharge = 2; //A surcharge of 100% means the job will cost twice as much.
                 break;
             case 3:
                 System.out.println("Enter the express time (minutes): ");
                 int et = sc.nextInt();
                 deadline = calculateDeadline(et);
+                System.out.println("Enter the surcharge rate: ");
+                surcharge = sc.nextFloat();
         }
         System.out.println("The deadline will be: " + deadline); //Testing point 4
 
@@ -170,24 +176,45 @@ public class Controller {
         j.setDeadline(deadline);
 
         //[7] Calculating price
-        System.out.println("The current total price is £" + j.calculatePrice());
+        float price = Float.parseFloat((df.format(j.calculatePrice())));
+        System.out.println("The current total price is £" + price);
 
-        //[8] Calculating price for a fixed discount customer
-        //makeFixed(j,20);
-        makeFlexible(j, 20);
+        //[8] Calculating price for a valued customer based on their discount plan
+        makeFixed(j,20);
+        //makeVariable(j);
+        //makeFlexible(j, 253);
         if(Customers.getCustomer(j.getCustomer()).isValuedCustomer()){ //Check if the customer is valued
             switch(Customers.getCustomer(j.getCustomer()).getDiscountType()){ //Check the discount type they have if they ARE valued
                 case 1:
-                    System.out.println("The discounted price will be £" + (j.calculatePrice() - Customers.getCustomer(j.getCustomer()).getDiscountAmount()));
+                    price = Float.parseFloat(df.format(price * (1-Customers.getCustomer(j.getCustomer()).getDiscountAmount()/100)));
+                    System.out.println("The discounted price will be £" + df.format(price));
                     break;
                 case 2:
-                    System.out.println("VARIABLE");
+                    j.printDiscountTasks();
+                    System.out.println("Enter a discount value for each task: ");
+                    String[] arr2 = GetInp();
+                    j.setDiscounts(arr2);
+                    j.calculateDiscounts();
+                    j.printDiscountTasks();
+                    price = Float.parseFloat((df.format(price)));
+                    System.out.println("The discounted price will be £" + df.format(price));
                     break;
                 case 3:
-                    System.out.println("FLEXIBLE");
+                    price = Float.parseFloat(df.format(price*Customers.getCustomer(j.getCustomer()).calculateFlex()));
+                    System.out.println("The discounted price will be £" + df.format(price) + " at a discount rate of " + Float.parseFloat(df.format(1 - Customers.getCustomer(j.getCustomer()).calculateFlex()))*100 + "%.");
                     break;
             }
         }
+
+        //[9] Calculating price with surcharge for urgency (after discounts are applied)
+        price *= surcharge;
+        price = Float.parseFloat((df.format(price)));
+        System.out.println("The final price will be £" + df.format(price));
+
+        //[10] Confirmation
+        j.setPrice(price);
+        j.setStatus(0); //Sets the job to have a "pending" status
+        Customers.getCustomer(j.getCustomer()).addOutstandingPayment(j); //Adds the job as an outstanding payment to the customer
     }
 
     public void makeFixed(Job j, int d){ //To make the chosen customer have a fixed discount plan of a chosen amount
@@ -201,6 +228,10 @@ public class Controller {
         //System.out.println("Customer " + Customers.getCustomer(j.getCustomer()).getCustomerID() + " has a discount amount of " + Customers.getCustomer(j.getCustomer()).getDiscountAmount());
     }
 
+    public void makeVariable(Job j){
+        Customers.getCustomer(j.getCustomer()).setValuedCustomer(true);
+        Customers.getCustomer(j.getCustomer()).setDiscountType(2);
+    }
     public void makeFlexible(Job j, int d){ //To make the chosen customer have a flexible discount plan of a chosen amount
         Customers.getCustomer(j.getCustomer()).setValuedCustomer(true);
         Customers.getCustomer(j.getCustomer()).setDiscountType(3);
@@ -209,14 +240,19 @@ public class Controller {
         //Testing BandCheck (it works)
         //System.out.println("Band check? " + Customers.getCustomer(j.getCustomer()).checkBands(new String[] {"1" ,"3", "2", "4"}));
 
-        String[] b = {"10" ,"20", "30", "40"}; //Making a random band of prices
-        String[] p = {"10" ,"20", "30", "40"}; //Making a random band of corresponding discount rates
+        //Make a random array of bands and discount rates as strings
+        String[] b = {"50" ,"75", "150", "450"};
+        String[] p = {"10" ,"20", "30", "40"};
 
-        //TBC make a map instead of vector lol
+        //Convert array to vector
+        Vector<String> bands = new Vector<String>(Arrays.asList(b));
+        Vector<String> rates = new Vector<String>(Arrays.asList(p));
 
-        if(Customers.getCustomer(j.getCustomer()).checkBands(b)){
-            Customers.getCustomer(j.getCustomer()).setBands(b);
+        //Make sure both vectors are in ascending order and are of the same length before adding the bands and rates to the customer
+        if(Customer.checkBands(bands) && Customer.checkRates(rates) && Customer.isSame(bands,rates)){
+            Customers.getCustomer(j.getCustomer()).setBands(bands,rates);
         }
+        Customers.getCustomer(j.getCustomer()).printBands();
     }
 
     public Timestamp calculateDeadline(int mins){
@@ -228,16 +264,17 @@ public class Controller {
         return dl;
     }
 
+
     public void CreateDummyData(){
         //Create some test tasks and customers
         for(int i=0; i<5; i++) {
-            TaskType t = new TaskType("Task " + Integer.toString(++counter), counter, "Lorem Ipsum", new Random().nextInt(100 + 1), new Random().nextInt((30+1) + 300)); //Create a new task with test inputs
+            TaskType t = new TaskType("Task " + ++counter, counter, "Lorem Ipsum", Float.parseFloat(df.format(new Random().nextFloat() * 100)), new Random().nextInt((30+1) + 300)); //Create a new task with test inputs
             Tasks.addTask(t);
 
-            Customer c = new Customer(new Random().nextInt(100 + 1),"Customer " + Integer.toString(counter), "Contact " + Integer.toString(new Random().nextInt(100 + 1)), "Address " + Integer.toString(new Random().nextInt(100 + 1)), "07" + Integer.toString(new Random().nextInt((100000000 + 1) + 999999999)));
+            Customer c = new Customer(new Random().nextInt(100 + 1),"Customer " + counter, "Contact " + new Random().nextInt(100 + 1), "Address " + new Random().nextInt(100 + 1), "07" + new Random().nextInt((100000000 + 1) + 999999999));
             Customers.addCustomer(c);
 
-            Staff s = new Staff(new Random().nextInt(100 + 1), "Staff " + Integer.toString(counter), "Role " + Integer.toString(new Random().nextInt(5 + 1)));
+            Staff s = new Staff(new Random().nextInt(100 + 1), "Staff " + counter, "Role " + new Random().nextInt(5 + 1));
             Users.addStaff(s);
         }
         //Tasks.printTasks();

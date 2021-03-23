@@ -1,5 +1,7 @@
 package Job;
 
+import Controller.Controller;
+
 import java.sql.Timestamp;
 import java.util.Vector;
 
@@ -21,14 +23,14 @@ public class Job {
 
     public Job(int jobID) {
         this.jobID = jobID; //[?] How are ID's generated again?
-        this.jobDetails = " ";
-        this.Urgency = 0;
-        this.specialInstructions = " ";
-        this.status = 0;
-        this.deadline = null;
-        this.paid = false;
-        this.completionTime = null; //[?] How's this figured out? From the total time of tasks in the task vector?
-        this.price = 0f;
+        jobDetails = " ";
+        Urgency = 0;
+        specialInstructions = " ";
+        status = 0;
+        deadline = null;
+        paid = false;
+        completionTime = null; //[?] How's this figured out? From the total time of tasks in the task vector?
+        price = 0f;
         taskList = new Vector<Task>();
         //[?] Update on the database as well?
     }
@@ -123,9 +125,15 @@ public class Job {
         //Search the list of tasks for a task with that specific ID and remove it.
     }
 
-    public  void printTasks(){
+    public void printTasks(){
         for(int i = 0; i < taskList.size(); i++) {
             System.out.println("Task ID: " + taskList.elementAt(i).getTaskTypeID() + ", Description: " + taskList.elementAt(i).getTaskDescription() +  ", Location: " + taskList.elementAt(i).getLocation() + ", Price: " + taskList.elementAt(i).getPrice());
+        }
+    }
+
+    public void printDiscountTasks(){
+        for(int i = 0; i < taskList.size(); i++) {
+            System.out.println("Task ID: " + taskList.elementAt(i).getTaskTypeID() + ", Description: " + taskList.elementAt(i).getTaskDescription() +  ", Location: " + taskList.elementAt(i).getLocation() + ", Price: " + taskList.elementAt(i).getPrice() + " Discount: " + taskList.elementAt(i).getTaskDiscount() + "%.");
         }
     }
 
@@ -143,5 +151,17 @@ public class Job {
             p += taskList.elementAt(i).getPrice();
         }
         return p;
+    }
+
+    public void setDiscounts(String[] arr){
+        for(int i=0;i<taskList.size();i++){
+            taskList.elementAt(i).setTaskDiscount(Float.parseFloat(arr[i]));
+        }
+    }
+
+    public void calculateDiscounts(){
+        for(int i=0;i<taskList.size();i++){
+            taskList.elementAt(i).setPrice(Float.parseFloat(Controller.df.format(taskList.elementAt(i).getPrice() * (1 - taskList.elementAt(i).getTaskDiscount()/100))));
+        }
     }
 }

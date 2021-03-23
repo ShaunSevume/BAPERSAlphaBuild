@@ -15,7 +15,7 @@ public class Customer {
     private int discountType; //0 = none, 1 = fixed, 2 = variable, 3 = flexible
     private float discountAmount; //The amount of discount to apply to a customer's job, if they are on a FIXED discount plan.
     private float wallet; //The accumulated amount of ALL the customer's payments, used to determine the discount 'band' for the customer to be in, if they are on a FLEXIBLE discount plan.
-    private Vector<Float> bands; //The discount bands to be specified
+    private Vector<Vector<String>> bandList; //The discount bands to be specified
 
     public Customer(int customerID, String name, String contactName, String address, String phoneNo) {
         this.customerID = customerID; //[?] How are ID's generated again?
@@ -29,7 +29,8 @@ public class Customer {
         this.discountType = 0;
         this.discountAmount = 0;
         this.wallet = 0;
-        bands = new Vector<Float>();
+        bandList = new Vector<>();
+        outstandingPayment = new Vector<Job>();
         //[?] Add the customer to the database?
     }
 
@@ -120,29 +121,58 @@ public class Customer {
         this.wallet = wallet;
     }
 
-    public boolean checkBands(String[] arr){ //Check to see if the bands are in ascending order
+    public static boolean checkBands(Vector<String> bands){ //Check to see if the bands are in ascending order
         float prev = -1;
-        for(int i=0;i< arr.length;i++){
-            if(prev > Float.parseFloat(arr[i])){
+        for(int i=0;i< bands.size();i++){
+            if(prev > Float.parseFloat(bands.elementAt(i))){
                 return false;
             }
-            prev = Float.parseFloat(arr[i]);
+            prev = Float.parseFloat(bands.elementAt(i));
         }
         return true;
     }
 
-    public boolean checkDiscount(String[] arr){ //Check to see if the discount rates are in the range of 0 to 100
-        for(int i=0;i<arr.length;i++){
-            if(Float.parseFloat(arr[i]) < 0 || Float.parseFloat(arr[i]) > 100){
+    public static boolean checkRates(Vector<String> rates){ //Check to see if the discount rates are in the range of 0 to 100
+        for(int i=0;i<rates.size();i++){
+            if(Float.parseFloat(rates.elementAt(i)) < 0 || Float.parseFloat(rates.elementAt(i)) > 100){ //May need a condition for empty values
                 return false;
             }
         }
         return true;
     }
 
-    public void setBands(String[] arr){
-        for(int i=0;i< arr.length;i++){
-            bands.add(Float.parseFloat(arr[i]));
+    public static boolean isSame(Vector<String> bands, Vector<String> rates){
+        if(bands.size() == rates.size()){
+            return true;
+        }else{
+            return false;
         }
+    }
+
+    public void setBands(Vector<String> bands, Vector<String> rates){
+        bandList.add(bands);
+        bandList.add(rates);
+    }
+
+
+    public void printBands(){ //Prints the bands and discount rates side by side. Both vectors are the same size.
+        for(int i = 0;i<bandList.elementAt(0).size();i++){
+            if(i==0){
+                System.out.println("£0 to £" + bandList.elementAt(0).elementAt(i) + " — " + bandList.elementAt(1).elementAt(i) + "% discount");
+            }else{
+                System.out.println("£" + bandList.elementAt(0).elementAt(i-1) + " to £" + bandList.elementAt(0).elementAt(i) + " — " + bandList.elementAt(1).elementAt(i) + "% discount");
+            }
+        }
+    }
+
+    public float calculateFlex(){
+        float disc = 0;
+        for(int i=0;i<bandList.elementAt(0).size();i++){
+            if(wallet < Float.parseFloat(bandList.elementAt(0).elementAt(i))){
+                disc = 1 - (Float.parseFloat(bandList.elementAt(1).elementAt(i))/100);
+                return disc;
+            }
+        }
+        return 0;
     }
 }
