@@ -14,7 +14,9 @@ public class Job {
     private int status; //0 = Pending, 1 = Active, 2 = Completed
     private Timestamp deadline; //The deadline by which the job should be completed by.
     private boolean paid; //Indicates whether the current job has been paid for or not.
-    private Timestamp completionTime; //Indicates the time it took for the job to complete, once the last task has been done.
+    private Timestamp startTime; //Indicates the time at which the job finished.
+    private Timestamp finishTime; //Indicates the time at which the job finished.
+    private int timeTaken; //Time taken for the job to complete
     private float price; //The total price of the job (calculated from the sum of the task prices, [?] - but can be manually dictated if needs be).
     private Vector<Task> taskList; //A list of all the tasks this job consists of.
     //[?] Does each job require an attribute linking it to a customer, or is the linkage entirely handled through the database?
@@ -29,7 +31,9 @@ public class Job {
         status = 0;
         deadline = null;
         paid = false;
-        completionTime = null; //[?] How's this figured out? From the total time of tasks in the task vector?
+        startTime = null; //[?] How's this figured out? From the total time of tasks in the task vector?
+        finishTime = null;
+        timeTaken = 0;
         price = 0f;
         taskList = new Vector<Task>();
         //[?] Update on the database as well?
@@ -92,12 +96,28 @@ public class Job {
         this.paid = paid;
     }
 
-    public Timestamp getCompletionTime() {
-        return completionTime;
+    public Timestamp getStartTime() {
+        return startTime;
     }
 
-    public void setCompletionTime(Timestamp completionTime) {
-        this.completionTime = completionTime;
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    public Timestamp getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Timestamp finishTIme) {
+        this.finishTime = finishTIme;
+    }
+
+    public int getTimeTaken() {
+        return timeTaken;
+    }
+
+    public void setTimeTaken(int timeTaken) {
+        this.timeTaken = timeTaken;
     }
 
     public float getPrice() {
@@ -127,8 +147,32 @@ public class Job {
 
     public void printTasks(){
         for(int i = 0; i < taskList.size(); i++) {
-            System.out.println("Task ID: " + taskList.elementAt(i).getTaskTypeID() + ", Description: " + taskList.elementAt(i).getTaskDescription() +  ", Location: " + taskList.elementAt(i).getLocation() + ", Price: " + taskList.elementAt(i).getPrice());
+            System.out.println("Task ID: " + taskList.elementAt(i).getTaskTypeID() + ", Description: " + taskList.elementAt(i).getTaskDescription() +  ", Location: " + taskList.elementAt(i).getLocation() + ", Price: £" + taskList.elementAt(i).getPrice() + ", Status: " + taskList.elementAt(i).getStatus() + ", Start time: " + taskList.elementAt(i).getStartTime() + ", Finish time: " + taskList.elementAt(i).getFinishTime() + ", Time taken: "  + taskList.elementAt(i).getTimeTaken() + " minutes " + ", Completed By: " + taskList.elementAt(i).getCompletedBy());
         }
+    }
+
+    //[;-;]
+    public boolean searchTasks(int id){
+        for(int i=0;i<taskList.size();i++){
+            if (taskList.elementAt(i).getTaskTypeID() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //[;-;]
+    public Task getTask(int id){
+        for(int i=0;i<taskList.size();i++){
+            if (taskList.elementAt(i).getTaskTypeID() == id) {
+                return taskList.elementAt(i);
+            }
+        }
+        return null;
+    }
+
+    public Vector<Task> getTaskList() {
+        return taskList;
     }
 
     public void printDiscountTasks(){

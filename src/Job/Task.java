@@ -7,7 +7,9 @@ public class Task extends TaskType{
     private TaskType type; //This object will hold the details of the actual task, such as its location, price, etc. This must be a seperate object rather than a reference to the TaskType in the list of tasks, in case the list is modified or the task is deleted in the future.
     private int taskID; //The unique ID of this specific task.
     private int status; //0 = Pending, 1 = Active, 2 = Completed.
-    private Timestamp startTime; //The time at which the task was started.
+    private Timestamp startTime; //Indicates the time at which the task finished.
+    private Timestamp finishTime; //Indicates the time at which the task finished.
+    private int timeTaken; //Time taken for the task to complete
     private float taskDiscount; //The discount amount to be applied (only used for customers on a 'Variable discount' plan).
 
     private String completedBy; //The member of staff who completed the task.
@@ -20,6 +22,8 @@ public class Task extends TaskType{
 
         //These values are unknown at the time of the creation of a task to be added to a job, so they are either initialised to 0 or null to show this.
         startTime = null;
+        finishTime = null;
+        timeTaken = 0;
         taskDiscount = 0;
         completedBy = null;
         //[!] These tasks don't really exist without jobs, so make sure that each instance is placed in any job's list of tasks.
@@ -38,6 +42,10 @@ public class Task extends TaskType{
         return status;
     }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     public void updateTask(int status) {
         this.status = status;
     }
@@ -48,6 +56,22 @@ public class Task extends TaskType{
 
     public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
+    }
+
+    public Timestamp getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Timestamp finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public int getTimeTaken() {
+        return timeTaken;
+    }
+
+    public void setTimeTaken(int timeTaken) {
+        this.timeTaken = timeTaken;
     }
 
     public float getTaskDiscount() {
@@ -65,4 +89,5 @@ public class Task extends TaskType{
     public void setCompletedBy(String completedBy) {
         this.completedBy = completedBy;
     }
+
 }

@@ -21,7 +21,7 @@ public class Users {
         }
     }
 
-    public static Staff getTask(int id){
+    public static Staff getStaff(int id){
         for(int i = 0; i < listOfStaff.size(); i++) {
             if (listOfStaff.elementAt(i).getStaffID() == id) {
                 return listOfStaff.elementAt(i);
