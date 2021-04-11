@@ -1,0 +1,80 @@
+h1, h2, h3, h4, h5, h6, p {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Inter', sans-serif;
+	overflow: hidden;
+}
+
+.bg-image {
+	position: fixed;
+	height: 120%;
+	width: 120%;
+	left: -10%;
+	top: -10%;
+	background-size: cover;
+	background-position: center;
+	z-index: -1;
+
+	filter: blur(5px);
+
+}
+
+.wrapper {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background: rgba(0,0,0,.3);
+}
+
+.wrapper .title {
+	text-align: center;
+	color: #fff;
+	margin-top: 60px;
+	margin-bottom: 60px;
+}
+
+.wrapper .content {
+	position: relative;
+	overflow: hidden;
+}
+
+@media (min-width: 800px) {
+	.wrapper .content > .bp-description {
+		width: 60%;
+		float: left;
+	}
+
+	.wrapper .content > .bp-login-form {
+		width: 30%;
+		float: right;
+	}
+}
+
+.wrapper .content > .bp-description {
+	color: #fff;
+	margin-bottom: 40px;
+}
+
+.wrapper .content > .bp-login-form {
+	background: #eee;
+	padding: 30px 20px 20px 20px;
+	border-radius: 5px;
+}
+
+.wrapper .content > .bp-login-form > label {
+	margin-bottom: 8px;
+}
+
+.wrapper .content > .bp-login-form > input {
+	margin-bottom: 15px;
+}
+
+.wrapper .content > .bp-login-form > button {
+	margin-top: 5px;
+	padding-left: 40px;
+	padding-right: 40px;
+	float: right;
+}

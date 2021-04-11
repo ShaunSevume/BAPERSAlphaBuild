@@ -1,0 +1,258 @@
+h1, h2, h3, h4, h5, h6, p {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Inter', sans-serif;
+}
+
+.del {
+	text-decoration: line-through;
+}
+
+.bp-menu {
+	position: fixed;
+	height: 100%;
+	/* background: #141E30;
+	background: -webkit-linear-gradient(to bottom, #243B55, #141E30);
+	background: linear-gradient(to bottom, #243B55, #141E30); */
+	background: #246265;
+	background: -webkit-linear-gradient(to bottom, #00AEB8, #246265);
+	background: linear-gradient(to bottom, #00AEB8, #246265);
+}
+
+.bp-menu > .bp-brand {
+	padding: 30px;
+	margin-bottom: 20px;
+	background: #1DB2BB;
+}
+
+.bp-menu > .bp-brand > a {
+	text-decoration: none;
+	font-size: 22pt;
+	font-weight: 200;
+	color: #fff;
+}
+
+.bp-menu > .nav > .nav-item {
+	padding: 10px 0px 10px 0px;
+}
+
+.bp-menu > .nav > .nav-item.sub {
+	padding-top: 0px;
+}
+
+.bp-menu > .nav > .nav-item > .nav-link {
+	color: #fff;
+	position: relative;
+	padding-left: 30px;
+	transition: background 0.15s ease-in-out;
+}
+
+.bp-menu > .nav > .nav-item.sub > .nav-link {
+	padding-left: 50px;
+}
+
+.bp-menu > .nav > .nav-item > .nav-link:before {
+	content: "";
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 0px;
+	border-radius: 0px 15px 15px 0px;
+	background: #fff;
+	transition: width 0.1s ease-in-out;
+}
+
+.bp-menu > .nav > .nav-item > .nav-link:hover,
+.bp-menu > .nav > .nav-item > .nav-link.active {
+	background: rgba(0,0,0,.1);
+}
+
+.bp-menu > .nav > .nav-item > .nav-link:not(.active):hover:before {
+	width: 3px;
+}
+
+.bp-menu > .nav > .nav-item > .nav-link > i {
+	margin-right: 10px;
+}
+
+.bp-menu > .bp-menu-bottom {
+	position: absolute;
+	overflow: hidden;
+	bottom: 0;
+	width: 100%;
+	padding: 20px 30px 20px 30px;
+	background: rgba(255,255,255,.2);
+}
+
+.bp-menu > .bp-menu-bottom > .menu-info {
+	color: #fff;
+	float: left;
+}
+
+.bp-menu > .bp-menu-bottom > .menu-info > .bp-role {
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+.bp-menu > .bp-menu-bottom > a.bp-logout {
+	float: right;
+	margin-top: 10px;
+	text-decoration: none;
+	color: #fff;
+}
+
+
+
+
+/* main */
+.bp-main {
+	position: absolute;
+	right: 0;
+}
+
+.bp-main > .bp-title-bar {
+	height: 103px;
+	background: #187C81;
+	color: #fff;
+	font-size: 15pt;
+	padding-top: 35px;
+	padding-left: 30px;
+}
+
+.bp-main > .bp-title-bar > i {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.bp-main > .bp-content {
+	padding: 30px;
+}
+
+.bp-main > .bp-content .bapers-form > label {
+	margin-bottom: 5px;
+}
+
+.bp-main > .bp-content .bapers-form > .form-control {
+	margin-bottom: 15px;
+}
+
+.bp-main > .bp-content .bapers-form > table.table-borderless td {
+	padding: 0;
+}
+
+.bp-main > .bp-content .bp-vj-inst {
+	margin-bottom: 20px;
+}
+
+.bp-main > .bp-content .bp-vj-inst > .feather {
+	margin-right: 8px;
+}
+
+.bp-main > .bp-content a.bp-lv-card {
+	display: block;
+	text-decoration: none;
+}
+
+.bp-main > .bp-content .bp-lv-card {
+	margin-bottom: 10px;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header {
+	position: relative;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > .lv-close-cue {
+	padding: 0px 5px 0px 5px;
+	float: right;
+	border-radius: 5px;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > .lv-close-cue:not(.btn-primary) {
+	color: #fff;;
+	background: rgba(255,255,255,.3);
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > .lv-close-cue.lv-drop {
+	padding: 0px;
+	float: right;
+	background: none;
+	color: #fff;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > .lv-close-cue.lv-drop > .btn::after {
+	display: none;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > .lv-close-cue.lv-alert {
+	color: #c90035;
+	background: #fff;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > form {
+	float: right;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > form > input {
+	display: none;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header .btn {
+	padding: 0px 10px 0px 10px;
+}
+
+.bp-main > .bp-content .bp-lv-card a {
+	text-decoration: none;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > .icon {
+	position: absolute;
+	font-size: 15pt;
+	top: 14%;
+	right: 15px;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-header > .feather {
+	margin-right: 10px;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-body:not(.lv-body-with-desc) {
+	padding: 0;
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-body > .location {
+	float: right;
+	padding: 10px 15px 10px 15px;
+	background: rgba(0,0,0,.1);
+}
+
+.bp-main > .bp-content .bp-lv-card > .card-body > .location > .feather {
+	margin-right: 5px;
+}
+
+.bp-main > .bp-content .bp-pill-nav input {
+	display: none;
+}
+
+.bp-main > .bp-content .bp-pill-nav {
+	margin-bottom: 20px;
+	border-radius: 5px;
+}
+
+.bp-main > .bp-content .bp-pill-nav .nav-link {
+	color: #fff;
+}
+
+.xenon-branding {
+	position: fixed;
+	right: 30px;
+	bottom: 0;
+}
+
+.xenon-branding img {
+	height: 100px;
+}
